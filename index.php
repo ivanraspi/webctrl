@@ -17,10 +17,10 @@ $(document).ready(function(){
    $.post("k.php",function(data1,status){
         $('#v1').attr("value",data1);
            if (data1=="0"){
-          $('#led').attr("class","switch_button on");
+          $('#led').attr("class","switch_button off");
         }
         else{
-           $('#led').attr("class","switch_button off");
+           $('#led').attr("class","switch_button on");
         }
      });
   setInterval(function() {
@@ -41,13 +41,13 @@ $(document).ready(function(){
   $("#led").click(function(){
     if ($(this).attr("class") != "switch_button on"){
        $(this).attr("class","switch_button on");
-       $.post("py.php",{ledon:1},function(data,status){
+       $.post("py.php",{ledon:0},function(data,status){
        //##alert("Data: " + data + "\nStatus: " + status);
        });
      }
      else{
        $(this).attr("class","switch_button off");
-       $.post("py.php",{ledon:0},function(data,status){
+       $.post("py.php",{ledon:1},function(data,status){
        //##alert("Data: " + data + "\nStatus: " + status);
        });
       }    
