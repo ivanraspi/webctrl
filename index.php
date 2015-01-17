@@ -9,51 +9,156 @@
 <script>
 $(document).ready(function(){
   
-};
+}
 </script>
 
 <script>
 $(document).ready(function(){
-   $.post("k.php",function(data1,status){
-        $('#v1').attr("value",data1);
-           if (data1=="0"){
-          $('#led').attr("class","switch_button off");
+   function Cam(){      //第二个自动刷新,刷新相头
+     $.post("cam.php",{bt:1},function(){
+	 $('#cam1').attr("src","./img/pic.jpg");
+	 //#$("#cam1").load(location.href+" #cam1>*","");
+     	});
+     }
+   $.ajax({            				//载入时读取第一个开关状态
+        url: './data/k.txt',
+        dataType: 'text',
+        error: function(xhr) { alert( xhr.responseText ); }, //如果你的url,txt有问题,将会提示
+        success: function(data) {
+            if (data=="0"){
+                $('#led').attr("class","switch_button off");
+            }
+            else{
+               $('#led').attr("class","switch_button on");
+            }
         }
-        else{
-           $('#led').attr("class","switch_button on");
+    });
+   $.ajax({					//载入时读取第二个开关状态
+        url: './data/bt2.txt',
+        dataType: 'text',
+        error: function(xhr) { alert( xhr.responseText ); }, //如果你的url,txt有问题,将会提示
+        success: function(data) {
+            if (data=="0"){
+                $('#cam-b').attr("class","switch_button off");
+            }
+            else{
+               $('#cam-b').attr("class","switch_button on");
+	      
+            }
         }
-     });
-  setInterval(function() {
-     $("#v1").load(location.href+" #v1>*","");
-    $("#v2").load(location.href+" #v2>*","");
-    $("#v3").load(location.href+" #v3>*","");
-    $.post("py.php",function(data,status){
+    });
+   $.ajax({					//载入时读取第四个开关状态
+        url: './data/bt4.txt',
+        dataType: 'text',
+        error: function(xhr) { alert( xhr.responseText ); }, //如果你的url,txt有问题,将会提示
+        success: function(data) {
+            if (data=="0"){
+                $('#bt-4').attr("class","switch_button off");
+            }
+            else{
+               $('#bt-4').attr("class","switch_button on");
+	      
+            }
+        }
+    });
+
+
+   $('#cam1').attr("src","./img/pic.jpg"); //刷新图片
+   $('#v2').load('./data/c.txt');  //刷新温度
+   $('#v3').load("./data/h.txt"); //刷新湿度
+   $('#uptime').load('./data/uptime.txt'); //刷新数据
+     
+  setInterval(function() {   //第一个自动刷新
+        
+    $.post("py.php",function(){
     $('#v2').load('./data/c.txt');
     //#alert(data);
-    $('#v3').load("./data/h.txt");
-     //#$('#v1').load("./data/k.txt");     
+    $('#v3').load("./data/h.txt"); 
+     $('#uptime').load('./data/uptime.txt');    
      });
-    
+     $.ajax({					//截入时读取第二个开关状态
+        url: './data/bt2.txt',
+        dataType: 'text',
+        //error: function(xhr) { alert( xhr.responseText ); }, //如果你的url,txt有问题,将会提示
+        success: function(data) {
+            if (data=="1"){
+                Cam();
+            }
+            else{               
+            }
+         }
+      });     
+
    }, 10000);
   
+ 
 
-
-  $("#led").click(function(){
+  $("#led").click(function(){    //LED的按钮事件
     if ($(this).attr("class") != "switch_button on"){
        $(this).attr("class","switch_button on");
        $.post("py.php",{ledon:0},function(data,status){
-       //##alert("Data: " + data + "\nStatus: " + status);
+       alert("Data: " + data + "\nStatus: " + status);
        });
      }
      else{
        $(this).attr("class","switch_button off");
        $.post("py.php",{ledon:1},function(data,status){
-       //##alert("Data: " + data + "\nStatus: " + status);
+       alert("Data: " + data + "\nStatus: " + status);
        });
       }    
     });
      
-  
+   $("#cam-b").click(function(){    //第二个按钮事件
+    if ($(this).attr("class") != "switch_button on"){
+       $(this).attr("class","switch_button on");
+       //#setInterval(Cam(), 3000);
+       $.post("cam.php",{bt:1},function(data,status){  
+       alert("Data: " + data + "\nStatus: " + status);
+       });
+     }
+     else{
+       $(this).attr("class","switch_button off");
+	//#clearInterval(Cam());
+       $.post("cam.php",{bt:0},function(data,status){  
+       alert("Data: " + data + "\nStatus: " + status);
+       });
+      }    
+    });
+   $("#bt-3").click(function(){    //第三个按钮事件
+    if ($(this).attr("class") != "switch_button on"){
+       $(this).attr("class","switch_button on");
+       //#setInterval(Cam(), 3000);
+       $.post("1",{bt3:1},function(data,status){  
+       alert("Data: " + data + "\nStatus: " + status);
+       });
+     }
+     else{
+       $(this).attr("class","switch_button off");
+	//#clearInterval(Cam());
+       $.post("1",{bt3:0},function(data,status){  
+       alert("Data: " + data + "\nStatus: " + status);
+       });
+      }    
+    });
+
+    $("#bt-4").click(function(){    //第四个按钮事件
+    if ($(this).attr("class") != "switch_button on"){
+       $(this).attr("class","switch_button on");
+       //#setInterval(Cam(), 3000);
+       $.post("py.php",{bt4:1},function(data,status){  
+       alert("Data: " + data + "\nStatus: " + status);
+       });
+     }
+     else{
+       $(this).attr("class","switch_button off");
+	//#clearInterval(Cam());
+       $.post("py.php",{bt4:0},function(data,status){  
+       alert("Data: " + data + "\nStatus: " + status);
+       });
+      }    
+    });
+
+
 
 });
 </script>
@@ -76,17 +181,69 @@ a {
 </div>
 </center>
 <br>
+<div style="display:-webkit-box">
+<!--<a>运行时间:</a>
+<a id="uptime" >
+</a>-->
+</div>
+
+<div >
+<a>CPU:</a>
+<a>
+<?php
+   $t = shell_exec("cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
+   echo sprintf("%sKHz  ", $t/1000);
+   #echo sprintf("%s/1000=%sKHz", str_replace("\n", "", $t), $t/1000);
+   ?>
+</a>
+<a>   CPU温度:</a>
+<a>
+<?php
+   $t = shell_exec("cat /sys/class/thermal/thermal_zone0/temp");
+   echo sprintf("%sC°", $t/1000);
+   #echo sprintf("%s/1000=%sC°", str_replace("\n", "", $t), $t/1000);
+   ?>
+</a>
+
+</div>
 <div>
-<a>当前温度:</a>
+<a>室内温度:</a>
 <a id="v2"></a>
-<a>℃ ， 当前湿度:</a>
+<a>℃ ， 室内湿度:</a>
 <a id="v3"></a>
 <a>℃</a>
 <br>
 <br>
-<a>开关控制:</a><br>
-<input type="hidden" id="v1" value='' name="ledon" />
-<div id="led" class="switch_button" status="0"></div>
+
+	<div style="float:left;width:4.5em;">
+		<a>LED开关</a><br>
+		<input type="hidden" id="v1" value='' name="ledon" />
+		<a id="led" class="switch_button" status="0" style="float:left;"></a>
+	</div>
+	<div style="float:left;width:4.5em;">
+		<a>CAM开关</a><br>
+		<input type="hidden" id="cam-b-1" value='' name="cam-b-1" />
+		<a id="cam-b" class="switch_button" status="0" style="float:left;"></a>
+	</div>
+	<div style="float:left;width:4.5em;">
+		<a>红外开关</a><br>
+		<input type="hidden" id="bt-3-v" value='' name="bt-3-v" />
+		<a id="bt-3" class="switch_button" status="0" style="float:left;"></a>
+	</div>
+	<div style="float:left;width:4.5em;">
+		<a>XBMC</a><br>
+		<input type="hidden" id="bt-4-v" value='' name="bt-4-v" />
+		<a id="bt-4" class="switch_button" status="0" style="float:left;"></a>
+	</div>
+
+
 </div>
+<div></div>
+    <div style="float:center;">
+	<!--<iframe id="cam" style="width:640px;height:480px;" src="http://ivanhaooray.eicp.net:8081">
+	</iframe>-->
+	<img id="cam1" src="./img/pic.jpg" style="width:307px;height:240px;">
+    </div>
+
 </body>
 </html>
