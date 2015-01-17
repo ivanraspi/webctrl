@@ -25,7 +25,6 @@ gpio.output(13,gpio.LOW)
 time.sleep(0.018)
 gpio.output(13,gpio.HIGH)
 i=1
-#i=1
   
 #wait to response
 gpio.setup(13,gpio.IN)
@@ -64,32 +63,43 @@ temperature_bit=data[16:24]
 temperature_point_bit=data[24:32]
 check_bit=data[32:40]
  
-humidity=0
-humidity_point=0
-temperature=0
-temperature_point=0
-check=0
- 
+humidity=""
+humidity_point=""
+temperature=""
+temperature_point=""
+check=""
+
 for i in range(0,8):
-    humidity+=humidity_bit[i]*2**(7-i)
-    humidity_point+=humidity_point_bit[i]*2**(7-i)
-    temperature+=temperature_bit[i]*2**(7-i)
-    temperature_point+=temperature_point_bit[i]*2**(7-i)
-    check+=check_bit[i]*2**(7-i)
+    #humidity+=humidity_bit[i]*2**(7-i)
+    #humidity_point+=humidity_point_bit[i]*2**(7-i)
+    #temperature+=temperature_bit[i]*2**(7-i)
+    #temperature_point+=temperature_point_bit[i]*2**(7-i)
+    #check+=check_bit[i]*2**(7-i)
+    humidity+=str(humidity_bit[i])
+    humidity_point+=str(humidity_point_bit[i])
+    temperature+=str(temperature_bit[i])
+    temperature_point+=str(temperature_point_bit[i])
+    check+=str(check_bit[i])
+humidity=int(humidity,2)
+humidity_point=int(humidity_point,2)
+temperature=int(temperature,2)
+temperature_point=int(temperature_point,2)
+check=int(check,2)
  
 tmp=humidity+humidity_point+temperature+temperature_point
 if check==tmp:
     print temperature,humidity/2
-    f = open('./data/c.txt','w')
-   # f.write(temperature)
-    print >>f, temperature
+    f = open("./data/c.txt",'w')
+    f.write(str(temperature))
+    f.write(str("."))
+    f.write(str(temperature_point))
     f.close()
     f = open('./data/h.txt','w')
-    #f.write(humidity/2)
-    print >>f, humidity/2
+    f.write(str(humidity/2))
+    f.write(".")
+    f.write(str(humidity_point/2))
     f.close()
+    print test
 else:
-    print "something is worong the humidity,humidity_point,temperature,temperature_point,check is",humidity,humidity_point,temperature,temperature_point,check
-   # f = open('./data/c.txt','w')
-   # print >>f,""
-   # f.close()
+    print "err",humidity,humidity_point,temperature,temperature_point,check
+exit()
