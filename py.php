@@ -27,8 +27,8 @@ else if (isset($bt4)){				//传按钮参数进来时执行；
 	echo "success!";
 	fclose($handle);//关闭文件
 
-	$on1 = escapeshellcmd("sudo service xbmc start");  //用escapeshellcmd可以增加安全性；
-	$off1 = escapeshellcmd("sudo service xbmc stop");
+	$on1 = escapeshellcmd("sudo service motion start");  //用escapeshellcmd可以增加安全性；
+	$off1 = escapeshellcmd("sudo service motion stop");
 	if ($bt4 == ""){
 	}
 	else if ($bt4 != "0") {

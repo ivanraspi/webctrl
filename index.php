@@ -15,8 +15,8 @@ $(document).ready(function(){
 <script>
 $(document).ready(function(){
    function Cam(){      //第二个自动刷新,刷新相头
-     $.post("cam.php",{bt:1},function(){
-	 $('#cam1').attr("src","./img/pic.jpg");
+     $.post("pic.php",{bt:1},function(data){
+	 $('#cam1').attr("src","./img/"+data);
 	 //#$("#cam1").load(location.href+" #cam1>*","");
      	});
      }
@@ -54,16 +54,20 @@ $(document).ready(function(){
         success: function(data) {
             if (data=="0"){
                 $('#bt-4').attr("class","switch_button off");
+	       $('#monitor').attr("style","display:none");
             }
             else{
                $('#bt-4').attr("class","switch_button on");
-	      
+	      $('#monitor').attr("style","");
             }
         }
     });
 
+   $.post("pic.php",function(data){
+	 $('#cam1').attr("src","./img/"+data);
+   });
 
-   $('#cam1').attr("src","./img/pic.jpg"); //刷新图片
+   //$('#cam1').attr("src","./img/pic.jpg"); //刷新图片
    $('#v2').load('./data/c.txt');  //刷新温度
    $('#v3').load("./data/h.txt"); //刷新湿度
    $('#uptime').load('./data/uptime.txt'); //刷新数据
@@ -73,6 +77,7 @@ $(document).ready(function(){
     $.post("py.php",function(){
     $('#v2').load('./data/c.txt');
     //#alert(data);
+    $('#monitor').attr("src","http://ivanhaooray.eicp.net:7777/");
     $('#v3').load("./data/h.txt"); 
      $('#uptime').load('./data/uptime.txt');    
      });
@@ -148,6 +153,11 @@ $(document).ready(function(){
        $.post("py.php",{bt4:1},function(data,status){  
        alert("Data: " + data + "\nStatus: " + status);
        });
+	$('#monitor').attr("style","");
+	//$('#monitor').load(location.href,"#monitor");
+	setTimeout(function () { 
+        		$('#monitor').attr("src","http://ivanhaooray.eicp.net:7777/");
+    	}, 1000);
      }
      else{
        $(this).attr("class","switch_button off");
@@ -155,6 +165,7 @@ $(document).ready(function(){
        $.post("py.php",{bt4:0},function(data,status){  
        alert("Data: " + data + "\nStatus: " + status);
        });
+	$('#monitor').attr("style","display:none");
       }    
     });
 
@@ -164,11 +175,12 @@ $(document).ready(function(){
 </script>
 <style>
 a {
-    font-size:1em;
+    font-size:0.9em;
 }
-.switch_button {background-image:url(./statics/switch_status.png);background-repeat:no-repeat;width:65px;height:91px;margin-bottom:30px;float:left;cursor:pointer;}
+.switch_button {background-image:url(./statics/switch_status.png);background-repeat:no-repeat;width:65px;height:91px;margin-bottom:15px;float:left;cursor:pointer;}
 .switch_button.on {background-position:-65px 0px}
 .switch_button.off {background-position:0px 0px}
+.button {float:left;width:4.5em;}
 </style>
 </head>
 <body bgcolor="white" text="black" width="auto">
@@ -215,35 +227,44 @@ a {
 <br>
 <br>
 
-	<div style="float:left;width:4.5em;">
+	<div class="button" >
 		<a>LED开关</a><br>
 		<input type="hidden" id="v1" value='' name="ledon" />
 		<a id="led" class="switch_button" status="0" style="float:left;"></a>
 	</div>
-	<div style="float:left;width:4.5em;">
+	<div class="button">
 		<a>CAM开关</a><br>
 		<input type="hidden" id="cam-b-1" value='' name="cam-b-1" />
 		<a id="cam-b" class="switch_button" status="0" style="float:left;"></a>
 	</div>
-	<div style="float:left;width:4.5em;">
+	<div class="button">
 		<a>红外开关</a><br>
 		<input type="hidden" id="bt-3-v" value='' name="bt-3-v" />
 		<a id="bt-3" class="switch_button" status="0" style="float:left;"></a>
 	</div>
-	<div style="float:left;width:4.5em;">
+	<div class="button">
 		<a>XBMC</a><br>
 		<input type="hidden" id="bt-4-v" value='' name="bt-4-v" />
 		<a id="bt-4" class="switch_button" status="0" style="float:left;"></a>
 	</div>
+	<div class="button">
+		<a>XBMC</a><br>
+		<input type="hidden" id="bt-5-v" value='' name="bt-5-v" />
+		<a id="bt-5" class="switch_button" status="0" style="float:left;"></a>
+	</div>
+
 
 
 </div>
 <div></div>
     <div style="float:center;">
 	<!--<iframe id="cam" style="width:640px;height:480px;" src="http://ivanhaooray.eicp.net:8081">
-	</iframe>-->
-	<img id="cam1" src="./img/pic.jpg" style="width:307px;height:240px;">
+	</iframe>
+	<img id="cam1" src="./img/pic.jpg" style="width:307px;height:240px;">-->
     </div>
-
+    <div style="float:center;">
+	<img id="monitor" display="none" class="shrinkToFit" alt="http://ivanhaooray.eicp.net:7777/" src="http://ivanhaooray.eicp.net:7777/" height="232" width="310">
+	
+    </div>
 </body>
 </html>
